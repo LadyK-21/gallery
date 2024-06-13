@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
-
 import 'package:gallery/data/gallery_options.dart';
 import 'package:gallery/layout/adaptive.dart';
 import 'package:gallery/layout/image_placeholder.dart';
@@ -166,7 +165,7 @@ class _TopBar extends StatelessWidget {
               spacing,
               Text(
                 localizations.rallyLoginLoginToRally,
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontSize: 35 / reducedTextScale(context),
                       fontWeight: FontWeight.w600,
                     ),
@@ -178,7 +177,7 @@ class _TopBar extends StatelessWidget {
             children: [
               Text(
                 localizations.rallyLoginNoAccount,
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               spacing,
               _BorderButton(
@@ -228,6 +227,7 @@ class _UsernameInput extends StatelessWidget {
       child: Container(
         constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
         child: TextField(
+          autofillHints: const [AutofillHints.username],
           textInputAction: TextInputAction.next,
           controller: usernameController,
           decoration: InputDecoration(
@@ -291,8 +291,8 @@ class _ThumbButtonState extends State<_ThumbButton> {
         child: GestureDetector(
           onTap: widget.onTap,
           child: Focus(
-            onKey: (node, event) {
-              if (event is RawKeyDownEvent) {
+            onKeyEvent: (node, event) {
+              if (event is KeyDownEvent || event is KeyRepeatEvent) {
                 if (event.logicalKey == LogicalKeyboardKey.enter ||
                     event.logicalKey == LogicalKeyboardKey.space) {
                   widget.onTap();
@@ -377,7 +377,7 @@ class _BorderButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
-        primary: Colors.white,
+        foregroundColor: Colors.white,
         side: const BorderSide(color: RallyColors.buttonColor),
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
         shape: RoundedRectangleBorder(
@@ -402,8 +402,8 @@ class _FilledButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       style: TextButton.styleFrom(
+        foregroundColor: Colors.black,
         backgroundColor: RallyColors.buttonColor,
-        primary: Colors.black,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),

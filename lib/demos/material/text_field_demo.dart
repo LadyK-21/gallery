@@ -4,7 +4,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
 
 // BEGIN textFieldDemo
@@ -287,6 +286,20 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                 },
               ),
               sizedBoxSpace,
+              // Disabled text field
+              TextFormField(
+                enabled: false,
+                restorationId: 'disabled_email_field',
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  filled: true,
+                  icon: const Icon(Icons.email),
+                  hintText: localizations.demoTextFieldYourEmailAddress,
+                  labelText: localizations.demoTextFieldEmail,
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              sizedBoxSpace,
               TextFormField(
                 restorationId: 'life_story_field',
                 focusNode: _lifeStory,
@@ -350,7 +363,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
               sizedBoxSpace,
               Text(
                 localizations.demoTextFieldRequiredField,
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               sizedBoxSpace,
             ],

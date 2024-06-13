@@ -66,6 +66,7 @@ class _HighlightFocusState extends State<HighlightFocus> {
       border: Border.all(
         color: borderColor,
         width: 2,
+        strokeAlign: BorderSide.strokeAlignOutside,
       ),
     );
 
@@ -77,8 +78,8 @@ class _HighlightFocusState extends State<HighlightFocus> {
           isFocused = newValue;
         });
       },
-      onKey: (node, event) {
-        if (event is RawKeyDownEvent &&
+      onKeyEvent: (node, event) {
+        if ((event is KeyDownEvent || event is KeyRepeatEvent) &&
             (event.logicalKey == LogicalKeyboardKey.space ||
                 event.logicalKey == LogicalKeyboardKey.enter ||
                 event.logicalKey == LogicalKeyboardKey.numpadEnter)) {

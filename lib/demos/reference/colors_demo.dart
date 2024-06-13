@@ -197,10 +197,10 @@ class _PaletteTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final whiteTextStyle = textTheme.bodyText2!.copyWith(
+    final whiteTextStyle = textTheme.bodyMedium!.copyWith(
       color: Colors.white,
     );
-    final blackTextStyle = textTheme.bodyText2!.copyWith(
+    final blackTextStyle = textTheme.bodyMedium!.copyWith(
       color: Colors.black,
     );
     return Scrollbar(
@@ -245,6 +245,7 @@ class ColorsDemo extends StatelessWidget {
             tabs: [
               for (final palette in palettes) Tab(text: palette.name),
             ],
+            labelColor: Theme.of(context).colorScheme.onPrimary,
           ),
         ),
         body: TabBarView(

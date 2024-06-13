@@ -5,7 +5,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
 import 'package:gallery/feature_discovery/animation.dart';
 
 const contentHeight = 80.0;
@@ -222,7 +221,7 @@ class Content extends StatelessWidget {
       title,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
-      style: theme.headline6?.copyWith(color: Colors.white),
+      style: theme.titleLarge?.copyWith(color: Colors.white),
     );
   }
 
@@ -231,7 +230,7 @@ class Content extends StatelessWidget {
       description,
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
-      style: theme.subtitle1?.copyWith(color: Colors.white70),
+      style: theme.titleMedium?.copyWith(color: Colors.white70),
     );
   }
 }
@@ -311,6 +310,7 @@ class TapTarget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
     return Positioned(
       left: center.dx,
       top: center.dy,
@@ -323,8 +323,10 @@ class TapTarget extends StatelessWidget {
             child: Container(
               height: radius * 2,
               width: radius * 2,
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: theme.brightness == Brightness.dark
+                    ? theme.colorScheme.primary
+                    : Colors.white,
                 shape: BoxShape.circle,
               ),
               child: child,

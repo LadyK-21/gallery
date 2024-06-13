@@ -35,8 +35,6 @@ class AdaptiveNav extends StatefulWidget {
 }
 
 class _AdaptiveNavState extends State<AdaptiveNav> {
-  UniqueKey _inboxKey = UniqueKey();
-
   @override
   void initState() {
     super.initState();
@@ -91,7 +89,6 @@ class _AdaptiveNavState extends State<AdaptiveNav> {
 
     if (isDesktop) {
       return _DesktopNav(
-        inboxKey: _inboxKey,
         extended: !isTablet,
         destinations: navigationDestinations,
         folders: folders,
@@ -99,7 +96,6 @@ class _AdaptiveNavState extends State<AdaptiveNav> {
       );
     } else {
       return _MobileNav(
-        inboxKey: _inboxKey,
         destinations: navigationDestinations,
         folders: folders,
         onItemTapped: _onDestinationSelected,
@@ -114,10 +110,6 @@ class _AdaptiveNavState extends State<AdaptiveNav> {
     );
 
     final isDesktop = isDisplayDesktop(context);
-
-    if (emailStore.selectedMailboxPage != destination) {
-      _inboxKey = UniqueKey();
-    }
 
     emailStore.selectedMailboxPage = destination;
 
@@ -139,7 +131,6 @@ class _AdaptiveNavState extends State<AdaptiveNav> {
 
 class _DesktopNav extends StatefulWidget {
   const _DesktopNav({
-    this.inboxKey,
     required this.extended,
     required this.destinations,
     required this.folders,
@@ -147,7 +138,6 @@ class _DesktopNav extends StatefulWidget {
   });
 
   final bool extended;
-  final UniqueKey? inboxKey;
   final List<_Destination> destinations;
   final Map<String, String> folders;
   final void Function(int, MailboxPageType) onItemTapped;
@@ -242,9 +232,9 @@ class _DesktopNavState extends State<_DesktopNav>
             child: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1340),
-                child: _SharedAxisTransitionSwitcher(
+                child: const _SharedAxisTransitionSwitcher(
                   defaultChild: _MailNavigator(
-                    child: MailboxBody(key: widget.inboxKey),
+                    child: MailboxBody(),
                   ),
                 ),
               ),
@@ -271,7 +261,6 @@ class _NavigationRailHeader extends StatelessWidget {
       builder: (context, child) {
         return Align(
           alignment: AlignmentDirectional.centerStart,
-          widthFactor: animation.value,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -305,7 +294,7 @@ class _NavigationRailHeader extends StatelessWidget {
                               opacity: animation.value,
                               child: Text(
                                 'REPLY',
-                                style: textTheme.bodyText1!.copyWith(
+                                style: textTheme.bodyLarge!.copyWith(
                                   color: ReplyColors.white50,
                                 ),
                               ),
@@ -318,8 +307,8 @@ class _NavigationRailHeader extends StatelessWidget {
                     if (animation.value > 0)
                       Opacity(
                         opacity: animation.value,
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             SizedBox(width: 18),
                             ProfileAvatar(
                               avatar: 'reply/avatars/avatar_2.jpg',
@@ -396,7 +385,7 @@ class _NavigationRailFolderSection extends StatelessWidget {
                       ),
                       child: Text(
                         'FOLDERS',
-                        style: textTheme.caption!.copyWith(
+                        style: textTheme.bodySmall!.copyWith(
                           color: navigationRailTheme
                               .unselectedLabelTextStyle!.color,
                         ),
@@ -425,7 +414,7 @@ class _NavigationRailFolderSection extends StatelessWidget {
                                 const SizedBox(width: 24),
                                 Text(
                                   folder,
-                                  style: textTheme.bodyText1!.copyWith(
+                                  style: textTheme.bodyLarge!.copyWith(
                                     color: navigationRailTheme
                                         .unselectedLabelTextStyle!.color,
                                   ),
@@ -449,13 +438,11 @@ class _NavigationRailFolderSection extends StatelessWidget {
 
 class _MobileNav extends StatefulWidget {
   const _MobileNav({
-    this.inboxKey,
     required this.destinations,
     required this.folders,
     required this.onItemTapped,
   });
 
-  final UniqueKey? inboxKey;
   final List<_Destination> destinations;
   final Map<String, String> folders;
   final void Function(int, MailboxPageType) onItemTapped;
@@ -619,10 +606,8 @@ class _MobileNavState extends State<_MobileNav> with TickerProviderStateMixin {
       children: [
         NotificationListener<ScrollNotification>(
           onNotification: _handleScrollNotification,
-          child: _MailNavigator(
-            child: MailboxBody(
-              key: widget.inboxKey,
-            ),
+          child: const _MailNavigator(
+            child: MailboxBody(),
           ),
         ),
         MouseRegion(
@@ -789,7 +774,7 @@ class _AnimatedBottomAppBar extends StatelessWidget {
                                       }).textLabel,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText1!
+                                          .bodyLarge!
                                           .copyWith(color: ReplyColors.white50),
                                     ),
                                   ),
@@ -972,7 +957,7 @@ class _BottomDrawerDestinations extends StatelessWidget {
             ),
             title: Text(
               destination.textLabel,
-              style: theme.textTheme.bodyText2!.copyWith(
+              style: theme.textTheme.bodyMedium!.copyWith(
                 color: destination.type == selectedMailbox
                     ? theme.colorScheme.secondary
                     : theme.navigationRailTheme.unselectedLabelTextStyle!.color,
@@ -1032,7 +1017,7 @@ class _BottomDrawerFolderSection extends StatelessWidget {
               ),
               title: Text(
                 folder,
-                style: theme.textTheme.bodyText2!.copyWith(
+                style: theme.textTheme.bodyMedium!.copyWith(
                   color: navigationRailTheme.unselectedLabelTextStyle!.color,
                 ),
               ),
@@ -1193,7 +1178,7 @@ class _ReplyFabState extends State<_ReplyFab>
                               tooltip.toUpperCase(),
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline5!
+                                  .headlineSmall!
                                   .copyWith(
                                     fontSize: 16,
                                     color: theme.colorScheme.onSecondary,

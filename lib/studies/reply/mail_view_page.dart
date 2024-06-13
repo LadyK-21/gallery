@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery/studies/reply/model/email_model.dart';
 import 'package:gallery/studies/reply/model/email_store.dart';
@@ -67,7 +68,7 @@ class _MailViewHeader extends StatelessWidget {
             Expanded(
               child: SelectableText(
                 email.subject,
-                style: textTheme.headline4!.copyWith(height: 1.1),
+                style: textTheme.headlineMedium!.copyWith(height: 1.1),
               ),
             ),
             IconButton(
@@ -97,7 +98,7 @@ class _MailViewHeader extends StatelessWidget {
                 const SizedBox(height: 4),
                 SelectableText(
                   'To ${email.recipients},',
-                  style: textTheme.caption!.copyWith(
+                  style: textTheme.bodySmall!.copyWith(
                     color: Theme.of(context)
                         .navigationRailTheme
                         .unselectedLabelTextStyle!
@@ -126,13 +127,23 @@ class _MailViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SelectableText(
       message,
-      style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 16),
+      style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 16),
     );
   }
 }
 
 class _PictureGrid extends StatelessWidget {
   const _PictureGrid();
+
+  bool _shouldShrinkImage() {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.iOS:
+      case TargetPlatform.android:
+        return true;
+      default:
+        return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +162,7 @@ class _PictureGrid extends StatelessWidget {
           gaplessPlayback: true,
           package: 'flutter_gallery_assets',
           fit: BoxFit.fill,
+          cacheWidth: _shouldShrinkImage() ? 500 : null,
         );
       },
     );

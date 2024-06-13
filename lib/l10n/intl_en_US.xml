@@ -14,6 +14,26 @@
     description="A description about how to view the source code for this app."
     >To see the source code for this app, please visit the {repoLink}.</string>
   <string
+    name="deselect"
+    description="Deselect a (selectable) item"
+    >Deselect</string>
+  <string
+    name="notSelected"
+    description="Indicates the status of a (selectable) item not being selected"
+    >Not selected</string>
+  <string
+    name="select"
+    description="Select a (selectable) item"
+    >Select</string>
+  <string
+    name="selectable"
+    description="Indicates the associated piece of UI is selectable by long pressing it"
+    >Selectable (long press)</string>
+  <string
+    name="selected"
+    description="Indicates status of a (selectable) item being selected"
+    >Selected</string>
+  <string
     name="signIn"
     description="Sign in label to sign into website."
     >SIGN IN</string>
@@ -42,14 +62,6 @@
     description="Semantic label for back button to exit a study and return to the gallery home page."
     >Back to Gallery</string>
   <string
-    name="cardsDemoTappable"
-    description="The user can tap this button"
-    >Tappable</string>
-  <string
-    name="cardsDemoSelectable"
-    description="If the user taps and hold this card. The card will toggled between on and off."
-    >Selectable (long press)</string>
-  <string
     name="cardsDemoExplore"
     description="Click to see more about the content in the cards demo."
     >Explore</string>
@@ -61,6 +73,10 @@
     name="cardsDemoShareSemantics"
     description="Semantics label for Share. Label tells user to share the destinationName to the user. Example Share Tamil"
     >Share {destinationName}</string>
+  <string
+    name="cardsDemoTappable"
+    description="The user can tap this button"
+    >Tappable</string>
   <string
     name="cardsDemoTravelDestinationTitle1"
     description="The top 10 cities that you can visit in Tamil Nadu"
@@ -1179,20 +1195,24 @@
     >An iOS-styled navigation bar. The navigation bar is a toolbar that minimally consists of a page title, in the middle of the toolbar.</string>
   <string
     name="demoCupertinoPickerTitle"
-    description="Title for the cupertino date and time pickers component demo."
+    description="Title for the cupertino pickers component demo."
     >Pickers</string>
   <string
     name="demoCupertinoPickerSubtitle"
     description="Subtitle for the cupertino pickers component demo."
-    >iOS-style date and time pickers</string>
+    >iOS-style pickers</string>
   <string
     name="demoCupertinoPickerDescription"
     description="Description for the cupertino pickers component demo."
-    >An iOS-style picker widget that can be used to select dates, times, or both date and time.</string>
+    >An iOS-style picker widget that can be used to select strings, dates, times, or both date and time.</string>
   <string
     name="demoCupertinoPickerTimer"
     description="Label to open a countdown timer picker."
     >Timer</string>
+  <string
+    name="demoCupertinoPicker"
+    description="Label to open an iOS picker."
+    >Picker</string>
   <string
     name="demoCupertinoPickerDate"
     description="Label to open a date picker."
@@ -1313,6 +1333,18 @@
     name="demoCupertinoSearchTextFieldPlaceholder"
     description="The placeholder for a search text field demo."
     >Enter some text</string>
+  <string
+    name="demoCupertinoScrollbarTitle"
+    description="Title for the cupertino scrollbar demo."
+    >Scrollbar</string>
+  <string
+    name="demoCupertinoScrollbarSubtitle"
+    description="Subtitle for the cupertino scrollbar demo."
+    >iOS-style scrollbar</string>
+  <string
+    name="demoCupertinoScrollbarDescription"
+    description="Description for the cupertino scrollbar demo."
+    >A scrollbar that wraps the given child</string>
   <string
     name="demoMotionTitle"
     description="Title for the motion demo."
@@ -1648,11 +1680,11 @@
   <string
     name="demo2dTransformationsSubtitle"
     description="Subtitle for the 2D transformations demo."
-    >Pan, zoom, rotate</string>
+    >Pan and zoom</string>
   <string
     name="demo2dTransformationsDescription"
     description="Description for the 2D transformations demo."
-    >Tap to edit tiles, and use gestures to move around the scene. Drag to pan, pinch to zoom, rotate with two fingers. Press the reset button to return to the starting orientation.</string>
+    >Tap to edit tiles, and use gestures to move around the scene. Drag to pan and pinch with two fingers to zoom. Press the reset button to return to the starting orientation.</string>
   <string
     name="demo2dTransformationsResetTooltip"
     description="Tooltip for a button to reset the transformations (scale, translation) for the 2D transformations demo."
@@ -1951,7 +1983,7 @@
     >Keep it short, this is just a demo.</string>
   <string
     name="demoTextFieldLifeStory"
-    description="The label for for biography/life story input field."
+    description="The label for biography/life story input field."
     >Life story</string>
   <string
     name="demoTextFieldSalary"
@@ -2065,6 +2097,18 @@
     name="chipBiking"
     description="A chip component to that indicates a biking selection."
     >Biking</string>
+  <string
+    name="demo"
+    description="Used in the title of the demos."
+    >Demo</string>
+  <string
+    name="bottomAppBar"
+    description="Used as semantic label for a BottomAppBar."
+    >Bottom app bar</string>
+  <string
+    name="loading"
+    description="Indicates the loading process."
+    >Loading</string>
   <string
     name="dialogDiscardTitle"
     description="Alert dialog message to discard draft."

@@ -68,7 +68,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                           ),
                           Text(
                             localizations.shrineCartPageCaption,
-                            style: localTheme.textTheme.subtitle1!
+                            style: localTheme.textTheme.titleMedium!
                                 .copyWith(fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(width: 16),
@@ -107,7 +107,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                         shape: const BeveledRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(7)),
                         ),
-                        primary: shrinePink100,
+                        backgroundColor: shrinePink100,
                       ),
                       onPressed: () {
                         model.clearCart();
@@ -145,10 +145,10 @@ class ShoppingCartSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final smallAmountStyle =
-        Theme.of(context).textTheme.bodyText2!.copyWith(color: shrineBrown600);
+        Theme.of(context).textTheme.bodyMedium!.copyWith(color: shrineBrown600);
     final largeAmountStyle = Theme.of(context)
         .textTheme
-        .headline4!
+        .headlineMedium!
         .copyWith(letterSpacing: letterSpacingOrNone(mediumLetterSpacing));
     final formatter = NumberFormat.simpleCurrency(
       decimalDigits: 2,
@@ -327,7 +327,7 @@ class ShoppingCartRow extends StatelessWidget {
                               ),
                               SelectableText(
                                 product.name(context),
-                                style: localTheme.textTheme.subtitle1!
+                                style: localTheme.textTheme.titleMedium!
                                     .copyWith(fontWeight: FontWeight.w600),
                               ),
                             ],

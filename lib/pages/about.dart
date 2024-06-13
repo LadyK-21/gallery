@@ -5,7 +5,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void showAboutDialog({
@@ -20,8 +19,7 @@ void showAboutDialog({
 }
 
 Future<String> getVersionNumber() async {
-  final packageInfo = await PackageInfo.fromPlatform();
-  return packageInfo.version;
+  return '2.10.2+021002';
 }
 
 class _AboutDialog extends StatelessWidget {
@@ -30,7 +28,7 @@ class _AboutDialog extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final bodyTextStyle =
-        textTheme.bodyText1!.apply(color: colorScheme.onPrimary);
+        textTheme.bodyLarge!.apply(color: colorScheme.onPrimary);
     final localizations = GalleryLocalizations.of(context)!;
 
     const name = 'Flutter Gallery'; // Don't need to localize.
@@ -55,7 +53,9 @@ class _AboutDialog extends StatelessWidget {
               future: getVersionNumber(),
               builder: (context, snapshot) => SelectableText(
                 snapshot.hasData ? '$name ${snapshot.data}' : name,
-                style: textTheme.headline4!.apply(color: colorScheme.onPrimary),
+                style: textTheme.headlineMedium!.apply(
+                  color: colorScheme.onPrimary,
+                ),
               ),
             ),
             const SizedBox(height: 24),

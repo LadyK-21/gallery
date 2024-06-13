@@ -1,4 +1,7 @@
 {
+  "projects": {
+    "default": "gallery-flutter-dev"
+  },
   "targets": {
     "gallery-flutter-dev": {
       "hosting": {

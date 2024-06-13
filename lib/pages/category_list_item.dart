@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
+import 'package:gallery/constants.dart';
 import 'package:gallery/data/demos.dart';
 import 'package:gallery/layout/adaptive.dart';
 import 'package:gallery/pages/demo.dart';
@@ -93,9 +94,9 @@ class _CategoryListItemState extends State<CategoryListItem>
     switch (_controller.status) {
       case AnimationStatus.completed:
       case AnimationStatus.forward:
+      case AnimationStatus.reverse:
         return false;
       case AnimationStatus.dismissed:
-      case AnimationStatus.reverse:
         return true;
     }
   }
@@ -200,13 +201,16 @@ class _CategoryHeader extends StatelessWidget {
                     children: [
                       Padding(
                         padding: imagePadding,
-                        child: ExcludeSemantics(
-                          child: Image.asset(
+                        child: FadeInImage(
+                          image: AssetImage(
                             imageString,
-                            width: 64,
-                            height: 64,
                             package: 'flutter_gallery_assets',
                           ),
+                          placeholder: MemoryImage(kTransparentImage),
+                          fadeInDuration: entranceAnimationDuration,
+                          width: 64,
+                          height: 64,
+                          excludeFromSemantics: true,
                         ),
                       ),
                       Padding(
@@ -215,9 +219,10 @@ class _CategoryHeader extends StatelessWidget {
                           category.displayTitle(
                             GalleryLocalizations.of(context)!,
                           )!,
-                          style: Theme.of(context).textTheme.headline5!.apply(
-                                color: colorScheme.onSurface,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.headlineSmall!.apply(
+                                    color: colorScheme.onSurface,
+                                  ),
                         ),
                       ),
                     ],
@@ -312,12 +317,12 @@ class CategoryDemoItem extends StatelessWidget {
                     children: [
                       Text(
                         demo.title,
-                        style: textTheme.subtitle1!
+                        style: textTheme.titleMedium!
                             .apply(color: colorScheme.onSurface),
                       ),
                       Text(
                         demo.subtitle,
-                        style: textTheme.overline!.apply(
+                        style: textTheme.labelSmall!.apply(
                           color: colorScheme.onSurface.withOpacity(0.5),
                         ),
                       ),

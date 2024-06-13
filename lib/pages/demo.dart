@@ -2,11 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:io' show Platform;
-
 import 'package:dual_screen/dual_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
@@ -21,10 +18,7 @@ import 'package:gallery/pages/splash.dart';
 import 'package:gallery/themes/gallery_theme_data.dart';
 import 'package:gallery/themes/material_demo_theme_data.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
-const _demoViewedCountKey = 'demoViewedCountKey';
 
 enum _DemoState {
   normal,
@@ -57,7 +51,7 @@ class _DemoPageState extends State<DemoPage> {
     // page, we save it in a variable. The cost of running `slugToDemo` is
     // still only close to constant, as it's just iterating over all of the
     // demos.
-    slugToDemoMap = slugToDemo(context);
+    slugToDemoMap = Demos.asSlugToDemoMap(context);
   }
 
   @override
@@ -94,8 +88,6 @@ class _GalleryDemoPageState extends State<GalleryDemoPage>
   final RestorableInt _configIndex = RestorableInt(0);
 
   bool? _isDesktop;
-  bool _showFeatureHighlight = true;
-  late int _demoViewedCount;
 
   late AnimationController _codeBackgroundColorController;
 
@@ -114,19 +106,6 @@ class _GalleryDemoPageState extends State<GalleryDemoPage>
 
   bool get _hasOptions => widget.demo.configurations.length > 1;
 
-  bool get _isSupportedSharedPreferencesPlatform =>
-      !kIsWeb && (Platform.isAndroid || Platform.isIOS);
-
-  // Only show the feature highlight on Android/iOS, in mobile layout, non-test
-  // mode, and only on the first and fourth time the demo page is viewed.
-  bool _showFeatureHighlightForPlatform(BuildContext context) {
-    return _showFeatureHighlight &&
-        _isSupportedSharedPreferencesPlatform &&
-        !isDisplayDesktop(context) &&
-        !GalleryOptions.of(context).isTestMode &&
-        (_demoViewedCount == 0 || _demoViewedCount == 3);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -134,12 +113,6 @@ class _GalleryDemoPageState extends State<GalleryDemoPage>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    SharedPreferences.getInstance().then((preferences) {
-      setState(() {
-        _demoViewedCount = preferences.getInt(_demoViewedCountKey) ?? 0;
-        preferences.setInt(_demoViewedCountKey, _demoViewedCount + 1);
-      });
-    });
   }
 
   @override
@@ -194,7 +167,7 @@ class _GalleryDemoPageState extends State<GalleryDemoPage>
 
     if (await canLaunchUrlString(url)) {
       await launchUrlString(url);
-    } else {
+    } else if (context.mounted) {
       await showDialog<void>(
         context: context,
         builder: (context) {
@@ -245,8 +218,10 @@ class _GalleryDemoPageState extends State<GalleryDemoPage>
     final appBarPadding = isDesktop ? 20.0 : 0.0;
     final currentDemoState = _DemoState.values[_demoStateIndex.value];
     final localizations = GalleryLocalizations.of(context)!;
+    final options = GalleryOptions.of(context);
 
     final appBar = AppBar(
+      systemOverlayStyle: options.resolvedSystemUiOverlayStyle(),
       backgroundColor: Colors.transparent,
       leading: Padding(
         padding: EdgeInsetsDirectional.only(start: appBarPadding),
@@ -265,22 +240,12 @@ class _GalleryDemoPageState extends State<GalleryDemoPage>
             icon: FeatureDiscovery(
               title: localizations.demoOptionsFeatureTitle,
               description: localizations.demoOptionsFeatureDescription,
-              showOverlay: _showFeatureHighlightForPlatform(context),
+              showOverlay: !isDisplayDesktop(context) && !options.isTestMode,
               color: colorScheme.primary,
-              onDismiss: () {
-                setState(() {
-                  _showFeatureHighlight = false;
-                });
-              },
-              onTap: () {
-                setState(() {
-                  _showFeatureHighlight = false;
-                });
-              },
+              onTap: () => _handleTap(_DemoState.options),
               child: Icon(
                 Icons.tune,
-                color: currentDemoState == _DemoState.options ||
-                        _showFeatureHighlightForPlatform(context)
+                color: currentDemoState == _DemoState.options
                     ? selectedIconColor
                     : iconColor,
               ),
@@ -361,7 +326,7 @@ class _GalleryDemoPageState extends State<GalleryDemoPage>
         break;
       case _DemoState.code:
         final codeTheme = GoogleFonts.robotoMono(
-          fontSize: 12 * GalleryOptions.of(context).textScaleFactor(context),
+          fontSize: 12 * options.textScaleFactor(context),
         );
         section = CodeStyle(
           baseStyle: codeTheme.copyWith(color: const Color(0xFFFAFBFB)),
@@ -428,17 +393,18 @@ class _GalleryDemoPageState extends State<GalleryDemoPage>
       final isDemoNormal = currentDemoState == _DemoState.normal;
       // Add a tap gesture to collapse the currently opened section.
       demoContent = Semantics(
-        label: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        label:
+            '${GalleryLocalizations.of(context)!.demo}, ${widget.demo.title}',
         child: MouseRegion(
           cursor: isDemoNormal ? MouseCursor.defer : SystemMouseCursors.click,
           child: GestureDetector(
-            onTap: () {
-              if (!isDemoNormal) {
-                setStateAndUpdate(() {
-                  _demoStateIndex.value = _DemoState.normal.index;
-                });
-              }
-            },
+            onTap: isDemoNormal
+                ? null
+                : () {
+                    setStateAndUpdate(() {
+                      _demoStateIndex.value = _DemoState.normal.index;
+                    });
+                  },
             child: Semantics(
               excludeSemantics: !isDemoNormal,
               child: demoContent,
@@ -586,7 +552,7 @@ class _DemoSectionOptions extends StatelessWidget {
               ),
               child: Text(
                 GalleryLocalizations.of(context)!.demoOptionsTooltip,
-                style: textTheme.headline4!.apply(
+                style: textTheme.headlineMedium!.apply(
                   color: colorScheme.onSurface,
                   fontSizeDelta:
                       isDisplayDesktop(context) ? desktopDisplay1FontDelta : 0,
@@ -645,7 +611,7 @@ class _DemoSectionOptionsItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
           child: Text(
             title,
-            style: Theme.of(context).textTheme.bodyText2!.apply(
+            style: Theme.of(context).textTheme.bodyMedium!.apply(
                   color:
                       isSelected ? colorScheme.primary : colorScheme.onSurface,
                 ),
@@ -691,7 +657,7 @@ class _DemoSectionInfo extends StatelessWidget {
             children: [
               SelectableText(
                 title,
-                style: textTheme.headline4!.apply(
+                style: textTheme.headlineMedium!.apply(
                   color: colorScheme.onSurface,
                   fontSizeDelta:
                       isDisplayDesktop(context) ? desktopDisplay1FontDelta : 0,
@@ -700,7 +666,9 @@ class _DemoSectionInfo extends StatelessWidget {
               const SizedBox(height: 12),
               SelectableText(
                 description,
-                style: textTheme.bodyText2!.apply(color: colorScheme.onSurface),
+                style: textTheme.bodyMedium!.apply(
+                  color: colorScheme.onSurface,
+                ),
               ),
             ],
           ),
@@ -725,9 +693,8 @@ class DemoWrapper extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       height: height,
-      child: Material(
-        clipBehavior: Clip.antiAlias,
-        color: const Color(0x00000000),
+      child: ClipRRect(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(10.0),
           bottom: Radius.circular(2.0),
@@ -820,7 +787,7 @@ class CodeDisplayPage extends StatelessWidget {
               : const EdgeInsets.symmetric(vertical: 8),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.white.withOpacity(0.15),
+              backgroundColor: Colors.white.withOpacity(0.15),
               padding: const EdgeInsets.symmetric(horizontal: 8),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -833,7 +800,7 @@ class CodeDisplayPage extends StatelessWidget {
             },
             child: Text(
               GalleryLocalizations.of(context)!.demoCodeViewerCopyAll,
-              style: Theme.of(context).textTheme.button!.copyWith(
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                   ),

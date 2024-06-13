@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery/layout/adaptive.dart';
 import 'package:gallery/studies/reply/colors.dart';
@@ -204,10 +205,10 @@ class _MailPreview extends StatelessWidget {
                           children: [
                             Text(
                               '${email.sender} - ${email.time}',
-                              style: textTheme.caption,
+                              style: textTheme.bodySmall,
                             ),
                             const SizedBox(height: 4),
-                            Text(email.subject, style: textTheme.headline5),
+                            Text(email.subject, style: textTheme.headlineSmall),
                             const SizedBox(height: 16),
                           ],
                         ),
@@ -228,14 +229,14 @@ class _MailPreview extends StatelessWidget {
                       email.message,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: textTheme.bodyText2,
+                      style: textTheme.bodyMedium,
                     ),
                   ),
                   if (email.containsPictures) ...[
-                    Flexible(
+                    const Flexible(
                       fit: FlexFit.loose,
                       child: Column(
-                        children: const [
+                        children: [
                           SizedBox(height: 20),
                           _PicturePreview(),
                         ],
@@ -255,6 +256,16 @@ class _MailPreview extends StatelessWidget {
 class _PicturePreview extends StatelessWidget {
   const _PicturePreview();
 
+  bool _shouldShrinkImage() {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.iOS:
+      case TargetPlatform.android:
+        return true;
+      default:
+        return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -269,6 +280,7 @@ class _PicturePreview extends StatelessWidget {
               'reply/attachments/paris_${index + 1}.jpg',
               gaplessPlayback: true,
               package: 'flutter_gallery_assets',
+              cacheWidth: _shouldShrinkImage() ? 200 : null,
             ),
           );
         },
